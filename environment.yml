@@ -1,0 +1,9 @@
+name: engineering-toolbox
+channels:
+- defaults
+dependencies:
+- python
+- matplotlib
+- notebook
+- numpy
+- setuptools
