@@ -10,10 +10,6 @@ with open(conf_path) as configuration:
     Y = np.array(configuration['StandardFrame']['Y'])
     Z = np.array(configuration['StandardFrame']['Z'])
 
-# X = np.array([1,0,0])
-# Y = np.array([0,1,0])
-# Z = np.array([0,0,1])
-
 class Point:
     def set_position(self, x,y,z):
         self.position = dict(x=x, y=y, z=z)
