@@ -27,10 +27,16 @@ class Axis:
 
     def apply_rotation(self, rot):
         # rot is an instance of RotationMatrix
-        self.vector = self.vector.dot(rot.rot_X).dot(rot.rot_Y).dot(rot.rot_Z)
-        self.x = self.vector[0]
-        self.y = self.vector[1]
-        self.z = self.vector[2]
+        if type(rot) is RotationMatrix:
+            self.vector = self.vector.dot(rot.rot_X).dot(rot.rot_Y).dot(rot.rot_Z)
+            self.x = self.vector[0]
+            self.y = self.vector[1]
+            self.z = self.vector[2]
+        elif type(rot) is np.ndarray:
+            self.vector = self.vector.dot(rot)
+            self.x = self.vector[0]
+            self.y = self.vector[1]
+            self.z = self.vector[2]
 
 
 class Frame:
@@ -42,17 +48,17 @@ class Frame:
         self.axis = dict(x=Axis(X_[0], X_[1], X_[2]), y=Axis(Y_[0], Y_[1], Y_[2]), z=Axis(Z_[0], Z_[1], Z_[2]))
 
     def apply_rotation(self, rot):
-        # rot is an instance of RotationMatrix
+        # TODO: apply rotation directly to the matrix of the Frame
         for axis in ['x', 'y', 'z']:
             self.axis[axis].apply_rotation(rot)
 
 
 class RotationMatrix:
     # TODO: develop also a method for rotating according to a different frame. This method is based for the standard origin
-    def __init__(self, alpha, beta, gamma):
-        self.rot_X = self.make_X_rot(alpha)
+    def __init__(self, gamma, beta, alpha):
+        self.rot_X = self.make_X_rot(gamma)
         self.rot_Y = self.make_Y_rot(beta)
-        self.rot_Z = self.make_Z_rot(gamma)
+        self.rot_Z = self.make_Z_rot(alpha)
 
     def make_X_rot(self, gamma):
         x_rotation = [1, 0, 0]
