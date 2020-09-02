@@ -6,4 +6,5 @@ dependencies:
 - matplotlib
 - notebook
 - numpy
+- pyyaml
 - setuptools
