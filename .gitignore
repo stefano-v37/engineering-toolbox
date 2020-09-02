@@ -1,11 +1,3 @@
-# Custom
-EngineeringToolbox/Piping/*
-!EngineeringToolbox/Piping/.gitkeep
-EngineeringToolbox/Robotics/*
-!EngineeringToolbox/Robotics/.gitkeep
-EngineeringToolbox/Vibrations/*
-!EngineeringToolbox/Vibrations/.gitkeep
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
