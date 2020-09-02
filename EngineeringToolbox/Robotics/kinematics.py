@@ -3,6 +3,7 @@ import yaml
 
 from EngineeringToolbox.Robotics.utilities import THIS_DIR
 
+# test for git link
 conf_path = THIS_DIR + '\\configuration.yml'
 with open(conf_path) as configuration:
     configuration = yaml.safe_load(configuration)
