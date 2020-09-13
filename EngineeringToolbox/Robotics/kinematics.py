@@ -1,14 +1,10 @@
 import numpy as np
-import yaml
 
-from EngineeringToolbox.Robotics.utilities import THIS_DIR
+from EngineeringToolbox.Robotics.utilities import configuration
 
-conf_path = THIS_DIR + '\\configuration.yml'
-with open(conf_path) as configuration:
-    configuration = yaml.safe_load(configuration)
-    X = np.array(configuration['StandardFrame']['X'])
-    Y = np.array(configuration['StandardFrame']['Y'])
-    Z = np.array(configuration['StandardFrame']['Z'])
+X = np.array(configuration['StandardFrame']['X'])
+Y = np.array(configuration['StandardFrame']['Y'])
+Z = np.array(configuration['StandardFrame']['Z'])
 
 class Point:
     def set_position(self, x,y,z):
