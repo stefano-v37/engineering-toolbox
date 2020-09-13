@@ -73,18 +73,22 @@ class Plotter:
                 for axis in vector.axes:
                     if labels[i] is None:
                         labels[i] = [None for x in range(len(vector.axes))]
+                    if type(colors[i]) is str:
+                        colors[i] = [colors[i] for x in range(len(vector.axes))]
+                    elif colors[i] == None:
+                        colors[i] = [None for x in range(len(vectors.axes))]
                     # vectorname = cls.variablename(axis).replace('__', '')
                     points = [[axis.origin.vector[i], axis.end.vector[i]] for i in range(len(axis.vector))]
                     ax.plot(points[0],
                             points[1],
                             points[2],
-                            color=colors[i],
+                            color=colors[i][k],
                             label=labels[i][k])
                     a = Arrow3D(points[0],
                                 points[1],
                                 points[2],
                             mutation_scale=kwargs.get('mutation_scale', 10),
-                            arrowstyle=kwargs.get('arrowstyle', "-|>"), color=colors[i])
+                            arrowstyle=kwargs.get('arrowstyle', "-|>"), color=colors[i][k])
                     ax.add_artist(a)
                     k += 1
                 i += 1
