@@ -41,6 +41,12 @@ class Line:
         # successive rotation are peformed on the actual rotated fixed frame
         # TODO: why??
         # .apply_rotation(1) -> .apply_rotation(2) == .apply_rotation([2,1])
+        ### FIXED FRAME POV:
+        ### rot = [rot3, rot2, rot1]; .apply_rotation(1), .apply_rotation(2), .apply_rotation(3)
+        ###
+        ##### PREVIOUS FRAME POV:
+        ##### rot = [rot1, rot2, rot3]; .apply_rotation(3), .apply_rotation(2), .apply_rotation(1)
+        ##### NOTE THAT IT STARTS WITH FIXED FRAME, THEREFORE IF YOU ROTATE AN ALREADY ROTATED FRAME IT WON'T BE COORDINATED
         if type(rot) is np.ndarray:
             rot = [rot]
         rot = rot + [self.vector]
