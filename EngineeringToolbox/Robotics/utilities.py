@@ -57,55 +57,87 @@ class Plotter:
 
     @classmethod
     def add_vector(cls, ax, vectors, **kwargs):
+        # TODO: create method for this "macro"
         colors = kwargs.get('colors', None)
         if type(colors) is str:
             colors = [colors for x in range(len(vectors))]
-        elif colors == None:
+        elif colors is None:
             colors = [None for x in range(len(vectors))]
+
+        alpha = kwargs.get('alpha', None)
+        if type(alpha) is float:
+            alpha = [alpha for x in range(len(vectors))]
+        elif alpha is None:
+            alpha = [None for x in range(len(vectors))]
+
+        ls = kwargs.get('ls', None)
+        if type(ls) is str:
+            ls = [ls for x in range(len(vectors))]
+        elif ls is None:
+            ls = [None for x in range(len(vectors))]
 
         i = 0
         j = 0
         labels = kwargs.get('labels', [None for x in range(len(vectors))])
+
         for vector in vectors:
             if vector.__class__.__name__ == 'Frame':
                 j += 3
                 k = 0
+                if labels[i] is None:
+                    labels[i] = [None for x in range(len(vector.axes))]
+                if isinstance(ls[i], str):
+                    ls[i] = [ls[i] for x in range(len(vector.axes))]
+                elif ls[i] is None:
+                    ls[i] = [None for x in range(len(vector.axes))]
+
+                if type(alpha[i]) is float:
+                    alpha[i] = [alpha[i] for x in range(len(vector.axes))]
+                elif alpha[i] is None:
+                    alpha[i] = [None for x in range(len(vector.axes))]
+
+                if type(colors[i]) is str:
+                    colors[i] = [colors[i] for x in range(len(vector.axes))]
+                elif colors[i] == None:
+                    colors[i] = [None for x in range(len(vector.axes))]
                 for axis in vector.axes:
-                    if labels[i] is None:
-                        labels[i] = [None for x in range(len(vector.axes))]
-                    if type(colors[i]) is str:
-                        colors[i] = [colors[i] for x in range(len(vector.axes))]
-                    elif colors[i] == None:
-                        colors[i] = [None for x in range(len(vectors.axes))]
                     # vectorname = cls.variablename(axis).replace('__', '')
                     points = [[axis.origin.vector[i], axis.end.vector[i]] for i in range(len(axis.vector))]
                     ax.plot(points[0],
                             points[1],
                             points[2],
                             color=colors[i][k],
-                            label=labels[i][k])
+                            label=labels[i][k],
+                            ls=ls[i][k],
+                            alpha=alpha[i][k])
                     a = Arrow3D(points[0],
                                 points[1],
                                 points[2],
                             mutation_scale=kwargs.get('mutation_scale', 10),
-                            arrowstyle=kwargs.get('arrowstyle', "-|>"), color=colors[i][k])
+                            arrowstyle=kwargs.get('arrowstyle', "-|>"), color=colors[i][k],
+                                ls=ls[i][k],
+                                alpha=alpha[i][k])
                     ax.add_artist(a)
                     k += 1
                 i += 1
-            if vector.__class__.__name__ == 'Axis':
+            if vector.__class__.__name__ == 'Line':
                 j += 1
                 points = [[vector.origin.vector[i], vector.end.vector[i]] for i in range(len(vector.vector))]
                 ax.plot(points[0],
                         points[1],
                         points[2],
                         color=colors[i],
-                        label=labels[i])
+                        label=labels[i],
+                        ls=ls[i],
+                        alpha=alpha[i])
                 a = Arrow3D(points[0],
                             points[1],
                             points[2],
                             mutation_scale=kwargs.get('mutation_scale', 10),
                             arrowstyle=kwargs.get('arrowstyle', "-|>"),
-                            color=colors[i])
+                            color=colors[i],
+                            ls=ls[i],
+                            alpha=alpha[i])
                 ax.add_artist(a)
                 i += 1
             if vector.__class__.__name__ == 'Point':
@@ -116,7 +148,8 @@ class Plotter:
                            points[1],
                            points[2],
                            color=colors[i],
-                           label=labels[i])
+                           label=labels[i],
+                           alpha=alpha[i])
                 i += 1
             legend = kwargs.get('legend', False)
             if legend:
@@ -128,6 +161,9 @@ class Plotter:
         ax.set_xlim3d(lim)
         ax.set_ylim3d(lim)
         ax.set_zlim3d(lim)
+        ax.set_xlabel('X axis')
+        ax.set_ylabel('Y axis')
+        ax.set_zlabel('Z axis')
 
     @classmethod
     def show(cls, vectors, **kwargs):
