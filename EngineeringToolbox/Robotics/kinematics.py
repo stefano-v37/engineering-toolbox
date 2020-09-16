@@ -15,6 +15,7 @@ class Point:
         self.z = z
         self.val = dict(x=x, y=y, z=z)
         self.vector = self.vector()
+        # self = self.__dict__
 
     def vector(self):
         return np.array([self.x, self.y, self.z])
@@ -31,10 +32,14 @@ class Line:
             self.origin = __O__
         self.end = Point(xyz)
         self.vector = self.vector()
-        self = self.__dict__
+        self.length = self.calculate_length()
+        # self = self.__dict__
 
     def vector(self):
         return self.end.vector - self.origin.vector
+
+    def calculate_length(self):
+        return np.sqrt(sum([(self.end.val[coord] - self.origin.val[coord])**2 for coord in ['x', 'y', 'z']]))
 
     def apply_rotation(self, rot, inplace=False, new=True):
         # preliminary version: based on fixed origin and fixed frame
@@ -49,11 +54,13 @@ class Line:
         ##### NOTE THAT IT STARTS WITH FIXED FRAME, THEREFORE IF YOU ROTATE AN ALREADY ROTATED FRAME IT WON'T BE COORDINATED
         if type(rot) is np.ndarray:
             rot = [rot]
-        rot = rot + [self.vector]
-        rotated = np.linalg.multi_dot(rot)
+        rot_end = rot + [self.end.vector]
+        rotated = np.linalg.multi_dot(rot_end)
+        rot_origin = rot + [self.origin.vector]
+        o_rotated = np.linalg.multi_dot(rot_origin)
 
         if inplace:
-            self.__dict__.update(Line(rotated).__dict__)
+            self.__dict__.update(Line(rotated, origin=Point(o_rotated)).__dict__)
             if new:
                 return self
         else:
@@ -109,3 +116,12 @@ class RotationMatrix:
         y_rotation = [np.sin(alpha), np.cos(alpha), 0]
         z_rotation = [0, 0, 1]
         return np.array((x_rotation, y_rotation, z_rotation))
+
+    @classmethod
+    def axis_angle(cls, axis, angle):
+        x,y,z = axis.vector
+        t = angle
+        R1 = [np.cos(t) + (1-np.cos(t))*x**2, x*y*(1-np.cos(t)) - z*np.sin(t), x*z*(1-np.cos(t)) + y*np.sin(t)]
+        R2 = [y*x*(1-np.cos(t)) + z*np.sin(t), np.cos(t) + (1-np.cos(t))*y**2, y*z*(1-np.cos(t)) - x*np.sin(t)]
+        R3 = [z*x*(1-np.cos(t)) - y*np.sin(t), z*y*(1-np.cos(t)) + x*np.sin(t), np.cos(t) + (1-np.cos(t))*z**2]
+        return np.array([R1, R2, R3])
