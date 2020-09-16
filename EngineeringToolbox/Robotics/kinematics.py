@@ -32,6 +32,7 @@ class Line:
             self.origin = __O__
         self.end = Point(xyz)
         self.vector = self.vector()
+        self.homogeneous = np.append(self.vector, [1])
         self.length = self.calculate_length()
         # self = self.__dict__
 
