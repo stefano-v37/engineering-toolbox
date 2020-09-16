@@ -4,4 +4,4 @@ StandardFrame:
   Z : [0,0,1]
   O : [0,0,0]
 Plotter:
-  figsize : [16,9]
+  figsize : [5,5]

@@ -120,7 +120,7 @@ class Plotter:
                     ax.add_artist(a)
                     k += 1
                 i += 1
-            if vector.__class__.__name__ == 'Line':
+            if vector.__class__.__name__ in ['Line', 'Vector']:
                 j += 1
                 points = [[vector.origin.vector[i], vector.end.vector[i]] for i in range(len(vector.vector))]
                 ax.plot(points[0],
@@ -130,20 +130,20 @@ class Plotter:
                         label=labels[i],
                         ls=ls[i],
                         alpha=alpha[i])
-                a = Arrow3D(points[0],
-                            points[1],
-                            points[2],
-                            mutation_scale=kwargs.get('mutation_scale', 10),
-                            arrowstyle=kwargs.get('arrowstyle', "-|>"),
-                            color=colors[i],
-                            ls=ls[i],
-                            alpha=alpha[i])
-                ax.add_artist(a)
+                if vector.__class__.__name__ == 'Vector':
+                    a = Arrow3D(points[0],
+                                points[1],
+                                points[2],
+                                mutation_scale=kwargs.get('mutation_scale', 10),
+                                arrowstyle=kwargs.get('arrowstyle', "-|>"),
+                                color=colors[i],
+                                ls=ls[i],
+                                alpha=alpha[i])
+                    ax.add_artist(a)
                 i += 1
             if vector.__class__.__name__ == 'Point':
                 j += 1
                 points = vector.vector
-                print(points)
                 ax.scatter(points[0],
                            points[1],
                            points[2],

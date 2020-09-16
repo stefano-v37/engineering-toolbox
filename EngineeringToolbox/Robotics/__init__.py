@@ -1,2 +1,2 @@
-from .kinematics import *
 from .utilities import *
+from .Geometry import *

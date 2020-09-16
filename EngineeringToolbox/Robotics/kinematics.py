@@ -6,66 +6,65 @@ __Y__ = np.array(configuration['StandardFrame']['Y'])
 __Z__ = np.array(configuration['StandardFrame']['Z'])
 __O__ = np.array(configuration['StandardFrame']['O'])
 
-class Point:
-
-    def __init__(self, xyz):
-        x, y, z = xyz
-        self.x = x
-        self.y = y
-        self.z = z
-        self.val = dict(x=x, y=y, z=z)
-        self.vector = self.vector()
-        # self = self.__dict__
-
-    def vector(self):
-        return np.array([self.x, self.y, self.z])
+# class Point:
+#
+#     def __init__(self, xyz):
+#         x, y, z = xyz
+#         self.x = x
+#         self.y = y
+#         self.z = z
+#         self.val = dict(x=x, y=y, z=z)
+#         self.vector = self.vector()
+#
+#     def vector(self):
+#         return np.array([self.x, self.y, self.z])
 
 
 __O__ = Point(__O__)
 
 
-class Line:
-    def __init__(self, xyz, origin=None):
-        if origin:
-            self.origin = origin
-        else:
-            self.origin = __O__
-        self.end = Point(xyz)
-        self.vector = self.vector()
-        self.homogeneous = np.append(self.vector, [1])
-        self.length = self.calculate_length()
-        # self = self.__dict__
-
-    def vector(self):
-        return self.end.vector - self.origin.vector
-
-    def calculate_length(self):
-        return np.sqrt(sum([(self.end.val[coord] - self.origin.val[coord])**2 for coord in ['x', 'y', 'z']]))
-
-    def apply_rotation(self, rot, inplace=False, new=True):
-        # preliminary version: based on fixed origin and fixed frame
-        # successive rotation are peformed on the actual rotated fixed frame
-        # TODO: why??
-        # .apply_rotation(1) -> .apply_rotation(2) == .apply_rotation([2,1])
-        ### FIXED FRAME POV:
-        ### rot = [rot3, rot2, rot1]; .apply_rotation(1), .apply_rotation(2), .apply_rotation(3)
-        ###
-        ##### PREVIOUS FRAME POV:
-        ##### rot = [rot1, rot2, rot3]; .apply_rotation(3), .apply_rotation(2), .apply_rotation(1)
-        ##### NOTE THAT IT STARTS WITH FIXED FRAME, THEREFORE IF YOU ROTATE AN ALREADY ROTATED FRAME IT WON'T BE COORDINATED
-        if type(rot) is np.ndarray:
-            rot = [rot]
-        rot_end = rot + [self.end.vector]
-        rotated = np.linalg.multi_dot(rot_end)
-        rot_origin = rot + [self.origin.vector]
-        o_rotated = np.linalg.multi_dot(rot_origin)
-
-        if inplace:
-            self.__dict__.update(Line(rotated, origin=Point(o_rotated)).__dict__)
-            if new:
-                return self
-        else:
-            return rotated
+# class Line:
+#     def __init__(self, xyz, origin=None):
+#         if origin:
+#             self.origin = origin
+#         else:
+#             self.origin = __O__
+#         self.end = Point(xyz)
+#         self.vector = self.vector()
+#         self.homogeneous = np.append(self.vector, [1])
+#         self.length = self.calculate_length()
+#         # self = self.__dict__
+#
+#     def vector(self):
+#         return self.end.vector - self.origin.vector
+#
+#     def calculate_length(self):
+#         return np.sqrt(sum([(self.end.val[coord] - self.origin.val[coord])**2 for coord in ['x', 'y', 'z']]))
+#
+#     def apply_rotation(self, rot, inplace=False, new=True):
+#         # preliminary version: based on fixed origin and fixed frame
+#         # successive rotation are peformed on the actual rotated fixed frame
+#         # TODO: why??
+#         # .apply_rotation(1) -> .apply_rotation(2) == .apply_rotation([2,1])
+#         ### FIXED FRAME POV:
+#         ### rot = [rot3, rot2, rot1]; .apply_rotation(1), .apply_rotation(2), .apply_rotation(3)
+#         ###
+#         ##### PREVIOUS FRAME POV:
+#         ##### rot = [rot1, rot2, rot3]; .apply_rotation(3), .apply_rotation(2), .apply_rotation(1)
+#         ##### NOTE THAT IT STARTS WITH FIXED FRAME, THEREFORE IF YOU ROTATE AN ALREADY ROTATED FRAME IT WON'T BE COORDINATED
+#         if type(rot) is np.ndarray:
+#             rot = [rot]
+#         rot_end = rot + [self.end.vector]
+#         rotated = np.linalg.multi_dot(rot_end)
+#         rot_origin = rot + [self.origin.vector]
+#         o_rotated = np.linalg.multi_dot(rot_origin)
+#
+#         if inplace:
+#             self.__dict__.update(Line(rotated, origin=Point(o_rotated)).__dict__)
+#             if new:
+#                 return self
+#         else:
+#             return rotated
 
 
 __X__ = Line(__X__)
@@ -88,6 +87,11 @@ class Frame:
 
 
 __F__ = Frame([__X__, __Y__, __Z__])
+
+class OrientedLine(Line):
+    def __init__(self, **kwargs):
+        Line.__init__(self, **kwargs)
+        self.__F__ = kwargs.get('frame', __F__)
 
 
 class RotationMatrix:
